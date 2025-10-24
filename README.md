@@ -1,25 +1,25 @@
 # Worken Java Starter (Backend + Frontend)
 
-Dos proyectos separados — ambos en **Java**:
+Dos proyectos Java puros pensados para funcionar sin dependencias externas ni acceso a Maven Central.
 
-- `backend/` → API REST con Spring Boot + H2 (puerto 8080)
-- `frontend/` → Web MVC con Spring Boot + Thymeleaf (puerto 5173)
+- `backend/` → API HTTP en el puerto 8080 que gestiona trabajos informales.
+- `frontend/` → Servidor web en el puerto 5173 que consume la API y ofrece interfaz en el navegador.
 
 ## Requisitos
 - JDK 17+
-- Maven (o usa `mvnw` que llama a `mvn` instalado)
 
 ## Cómo arrancar
-1) Backend
-```bash
-cd backend
-./mvnw spring-boot:run
-```
-2) Frontend
-```bash
-cd ../frontend
-./mvnw spring-boot:run
-```
-Abre `http://localhost:5173` y navega a **Empleos**. Los datos se cargan desde `http://localhost:8080/api/jobs`.
+1. **Backend**
+   ```bash
+   cd backend
+   javac $(find src/main/java -name '*.java')
+   java -cp src/main/java com.worken.backend.BackendApplication
+   ```
+2. **Frontend** (en otra terminal)
+   ```bash
+   cd frontend
+   javac $(find src/main/java -name '*.java')
+   java -cp src/main/java:src/main/resources com.worken.frontend.FrontendApplication
+   ```
 
-> Esqueleto inspirado en una app con navegación por pantallas similar a la que ya subiste; aquí se ofrece versión 100% Java para que puedas seguir creciendo luego con React si lo deseas.
+Visita `http://localhost:5173/` y utiliza el formulario para crear trabajos o revisar la lista existente, la cual se sincroniza con la API en `http://localhost:8080/api/jobs`.

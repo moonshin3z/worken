@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+MVNW_CMD="mvn"
+if ! command -v "$MVNW_CMD" >/dev/null 2>&1; then
+  echo "Error: Maven no está instalado. Instálalo o ajusta MVNW_CMD en backend/mvnw." >&2
+  exit 1
+fi
+exec "$MVNW_CMD" "$@"
