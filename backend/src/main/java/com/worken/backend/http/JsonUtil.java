@@ -1,7 +1,7 @@
 package com.worken.backend.http;
 
 import com.worken.backend.job.Job;
-import com.worken.backend.job.JobInput;
+import com.worken.backend.job.JobRequest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -53,7 +53,7 @@ final class JsonUtil {
         return '{' + "\"error\":\"" + escape(message) + "\"}";
     }
 
-    static JobInput parseJobInput(String body) {
+    static JobRequest parseJobRequest(String body) {
         Map<String, String> values = new HashMap<>();
         Matcher stringMatcher = STRING_FIELD.matcher(body);
         while (stringMatcher.find()) {
@@ -71,11 +71,11 @@ final class JsonUtil {
         String contactPhone = values.getOrDefault("contactPhone", "");
         String contactEmail = values.getOrDefault("contactEmail", "");
         LocalDate publishedAt = parseDate(values.get("publishedAt"));
-        return new JobInput(title, description, category, city, payment, contactPhone, contactEmail, publishedAt);
+        return new JobRequest(title, description, category, city, payment, contactPhone, contactEmail, publishedAt);
     }
 
     private static double parseDouble(String value) {
-        if (value == null || value.isBlank()) {
+        if (value == null || value.trim().isEmpty()) {
             return 0.0;
         }
         try {
@@ -86,7 +86,7 @@ final class JsonUtil {
     }
 
     private static LocalDate parseDate(String value) {
-        if (value == null || value.isBlank()) {
+        if (value == null || value.trim().isEmpty()) {
             return null;
         }
         try {

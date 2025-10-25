@@ -56,7 +56,7 @@ public class BackendApplication {
     }
 
     private static int parsePort(String candidate, int fallback) {
-        if (candidate == null || candidate.isBlank()) {
+        if (candidate == null || candidate.trim().isEmpty()) {
             return fallback;
         }
         try {
