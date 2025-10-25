@@ -66,14 +66,14 @@ public class Job {
     public Job withUpdatedFields(JobInput input) {
         return new Job(
                 this.id,
-                input.title(),
-                input.description(),
-                input.category(),
-                input.city(),
-                input.payment(),
-                input.contactPhone(),
-                input.contactEmail(),
-                input.publishedAt()
+                input.getTitle(),
+                input.getDescription(),
+                input.getCategory(),
+                input.getCity(),
+                input.getPayment(),
+                input.getContactPhone(),
+                input.getContactEmail(),
+                input.getPublishedAt()
         );
     }
 

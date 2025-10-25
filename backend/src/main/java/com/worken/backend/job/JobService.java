@@ -22,28 +22,28 @@ public class JobService {
 
     public Job create(JobInput input) {
         Job job = new Job(0,
-                input.title(),
-                input.description(),
-                input.category(),
-                input.city(),
-                input.payment(),
-                input.contactPhone(),
-                input.contactEmail(),
-                ensureDate(input.publishedAt()));
+                input.getTitle(),
+                input.getDescription(),
+                input.getCategory(),
+                input.getCity(),
+                input.getPayment(),
+                input.getContactPhone(),
+                input.getContactEmail(),
+                ensureDate(input.getPublishedAt()));
         return repository.save(job);
     }
 
     public Optional<Job> update(long id, JobInput input) {
         return repository.findById(id).map(existing -> {
             Job updated = existing.withUpdatedFields(new JobInput(
-                    input.title(),
-                    input.description(),
-                    input.category(),
-                    input.city(),
-                    input.payment(),
-                    input.contactPhone(),
-                    input.contactEmail(),
-                    ensureDate(input.publishedAt())
+                    input.getTitle(),
+                    input.getDescription(),
+                    input.getCategory(),
+                    input.getCity(),
+                    input.getPayment(),
+                    input.getContactPhone(),
+                    input.getContactEmail(),
+                    ensureDate(input.getPublishedAt())
             ));
             return repository.save(updated);
         });

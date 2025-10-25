@@ -44,8 +44,10 @@ public class JobsHttpHandler implements HttpHandler {
 
     private void handleCollection(HttpExchange exchange, String method) throws IOException {
         switch (method) {
-            case "GET" -> respond(exchange, 200, JsonUtil.toJson(jobService.findAll()));
-            case "POST" -> {
+            case "GET":
+                respond(exchange, 200, JsonUtil.toJson(jobService.findAll()));
+                break;
+            case "POST":
                 String body = readBody(exchange.getRequestBody());
                 JobInput input = JsonUtil.parseJobInput(body);
                 String validation = validate(input);
@@ -55,8 +57,10 @@ public class JobsHttpHandler implements HttpHandler {
                 }
                 Job created = jobService.create(input);
                 respond(exchange, 201, JsonUtil.toJson(created));
-            }
-            default -> respond(exchange, 405, JsonUtil.error("Método no permitido"));
+                break;
+            default:
+                respond(exchange, 405, JsonUtil.error("Método no permitido"));
+                break;
         }
     }
 
@@ -67,15 +71,15 @@ public class JobsHttpHandler implements HttpHandler {
             return;
         }
         switch (method) {
-            case "GET" -> {
+            case "GET":
                 Optional<Job> job = jobService.findById(id);
                 if (job.isPresent()) {
                     respond(exchange, 200, JsonUtil.toJson(job.get()));
                 } else {
                     respond(exchange, 404, JsonUtil.error("Trabajo no encontrado"));
                 }
-            }
-            case "PUT" -> {
+                break;
+            case "PUT":
                 String body = readBody(exchange.getRequestBody());
                 JobInput input = JsonUtil.parseJobInput(body);
                 String validation = validate(input);
@@ -89,16 +93,18 @@ public class JobsHttpHandler implements HttpHandler {
                 } else {
                     respond(exchange, 404, JsonUtil.error("Trabajo no encontrado"));
                 }
-            }
-            case "DELETE" -> {
+                break;
+            case "DELETE":
                 boolean deleted = jobService.delete(id);
                 if (deleted) {
                     respond(exchange, 204, "");
                 } else {
                     respond(exchange, 404, JsonUtil.error("Trabajo no encontrado"));
                 }
-            }
-            default -> respond(exchange, 405, JsonUtil.error("Método no permitido"));
+                break;
+            default:
+                respond(exchange, 405, JsonUtil.error("Método no permitido"));
+                break;
         }
     }
 
@@ -138,19 +144,19 @@ public class JobsHttpHandler implements HttpHandler {
     }
 
     private String validate(JobInput input) {
-        if (input.title() == null || input.title().isBlank()) {
+        if (input.getTitle() == null || input.getTitle().isBlank()) {
             return "El título es obligatorio";
         }
-        if (input.description() == null || input.description().isBlank()) {
+        if (input.getDescription() == null || input.getDescription().isBlank()) {
             return "La descripción es obligatoria";
         }
-        if (input.category() == null || input.category().isBlank()) {
+        if (input.getCategory() == null || input.getCategory().isBlank()) {
             return "La categoría es obligatoria";
         }
-        if (input.city() == null || input.city().isBlank()) {
+        if (input.getCity() == null || input.getCity().isBlank()) {
             return "La ciudad es obligatoria";
         }
-        if (input.payment() <= 0) {
+        if (input.getPayment() <= 0) {
             return "El pago debe ser mayor a 0";
         }
         return null;
