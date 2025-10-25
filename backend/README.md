@@ -18,7 +18,10 @@ javac $(find src/main/java -name '*.java')
 java -cp src/main/java com.worken.backend.BackendApplication
 ```
 
-El servicio queda disponible en `http://localhost:8080/api/jobs`.
+Por defecto escuchará en `http://localhost:8080/api/jobs`, aunque puedes definir otra configuración:
+
+- Variable de entorno `BACKEND_PORT`.
+- Propiedad JVM `-Dbackend.port=<puerto>`.
 
 ## Endpoints
 - `GET /api/jobs`: lista todos los trabajos cargados.

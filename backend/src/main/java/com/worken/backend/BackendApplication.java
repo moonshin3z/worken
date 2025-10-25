@@ -19,17 +19,21 @@ import java.util.List;
  */
 public class BackendApplication {
 
-    public static final int PORT = 8080;
+    public static final int DEFAULT_PORT = 8080;
+    private static final String PORT_ENV = "BACKEND_PORT";
+    private static final String PORT_PROPERTY = "backend.port";
 
     public static void main(String[] args) throws IOException {
+        int port = resolvePort();
+
         InMemoryJobRepository repository = new InMemoryJobRepository();
         JobService jobService = new JobService(repository);
         seed(jobService);
 
-        HttpServer server = HttpServer.create(new InetSocketAddress(PORT), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
         server.createContext("/api/jobs", new JobsHttpHandler(jobService));
         server.setExecutor(null); // usa un pool por defecto
-        System.out.printf("Backend escuchando en http://localhost:%d/api/jobs%n", PORT);
+        System.out.printf("Backend escuchando en http://localhost:%d/api/jobs%n", port);
         server.start();
     }
 
@@ -42,6 +46,23 @@ public class BackendApplication {
 
         for (JobInput input : samples) {
             jobService.create(input);
+        }
+    }
+
+    private static int resolvePort() {
+        String env = System.getenv(PORT_ENV);
+        String property = System.getProperty(PORT_PROPERTY);
+        return parsePort(env, parsePort(property, DEFAULT_PORT));
+    }
+
+    private static int parsePort(String candidate, int fallback) {
+        if (candidate == null || candidate.isBlank()) {
+            return fallback;
+        }
+        try {
+            return Integer.parseInt(candidate.trim());
+        } catch (NumberFormatException ex) {
+            return fallback;
         }
     }
 }

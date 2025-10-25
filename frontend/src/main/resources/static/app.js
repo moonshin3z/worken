@@ -1,4 +1,7 @@
-const API_URL = 'http://localhost:8080/api/jobs';
+const DEFAULT_API_URL = 'http://localhost:8080/api/jobs';
+const API_URL = typeof window !== 'undefined' && window.__BACKEND_URL__
+  ? window.__BACKEND_URL__
+  : DEFAULT_API_URL;
 
 const state = {
   user: {

@@ -23,3 +23,10 @@ Dos proyectos Java puros pensados para funcionar sin dependencias externas ni ac
    ```
 
 Visita `http://localhost:5173/` y utiliza el formulario para crear trabajos o revisar la lista existente, la cual se sincroniza con la API en `http://localhost:8080/api/jobs`.
+
+## Configuración
+
+Ambos servidores permiten ajustar puertos y URL del backend sin recompilar:
+
+- **Backend**: define `BACKEND_PORT` o la propiedad `-Dbackend.port` para escoger otro puerto.
+- **Frontend**: define `FRONTEND_PORT`/`-Dfrontend.port` para mover el servidor web y `BACKEND_URL`/`-Dbackend.url` para apuntar a otra instancia del backend.

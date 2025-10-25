@@ -15,4 +15,8 @@ javac $(find src/main/java -name '*.java')
 java -cp src/main/java:src/main/resources com.worken.frontend.FrontendApplication
 ```
 
-Abre `http://localhost:5173/` en tu navegador una vez que el backend esté en marcha.
+De forma predeterminada se sirve en `http://localhost:5173/` y espera que el backend esté en `http://localhost:8080/api/jobs`.
+Puedes personalizarlo con:
+
+- Variables de entorno `FRONTEND_PORT` y `BACKEND_URL`.
+- Propiedades JVM `-Dfrontend.port=<puerto>` y `-Dbackend.url=<url>`.
