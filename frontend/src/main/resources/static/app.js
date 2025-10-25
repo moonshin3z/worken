@@ -121,7 +121,10 @@ const elements = {
   balanceAmount: document.getElementById('balance-amount'),
   balanceChange: document.getElementById('balance-change'),
   homeUsername: document.getElementById('home-username'),
-  tabBar: document.getElementById('tab-bar')
+  tabBar: document.getElementById('tab-bar'),
+  screens: document.querySelector('.screens'),
+  detailApply: document.getElementById('detail-apply'),
+  jobDetailScreen: document.getElementById('job-detail-screen')
 };
 
 function formatCurrency(value) {
@@ -146,6 +149,38 @@ function formatDate(dateString) {
 
 function getEmployer(jobIndex) {
   return employerProfiles[jobIndex % employerProfiles.length];
+}
+
+function hasApplication(jobId) {
+  return state.applications.some((application) => String(application.job.id) === String(jobId));
+}
+
+function setDetailApplyState(jobId) {
+  if (!elements.detailApply) return;
+  const alreadyApplied = hasApplication(jobId);
+  elements.detailApply.dataset.jobId = jobId;
+  elements.detailApply.disabled = alreadyApplied;
+  elements.detailApply.textContent = alreadyApplied ? 'Ya aplicaste' : 'Aplicar ahora';
+  if (alreadyApplied) {
+    elements.detailApply.setAttribute('aria-disabled', 'true');
+  } else {
+    elements.detailApply.removeAttribute('aria-disabled');
+  }
+}
+
+function addNotification({ title, description, icon = 'ℹ️', tone = 'info', time = 'Hace unos instantes' }) {
+  state.notifications = [
+    {
+      title,
+      description,
+      icon,
+      tone,
+      time,
+      isNew: true
+    },
+    ...state.notifications
+  ];
+  renderNotifications();
 }
 
 function showScreen(screenId) {
@@ -385,20 +420,78 @@ function renderApplications() {
 }
 
 function updateApplicationsFromJobs() {
-  if (!state.jobs.length) {
-    state.applications = [];
-    return;
-  }
   const statuses = [
     { label: 'Aceptada', tone: 'success', meta: 'Inicio: Mañana 14:00' },
     { label: 'Pendiente', tone: 'warning', meta: 'Esperando respuesta del empleador' }
   ];
-  state.applications = state.jobs.slice(0, 2).map((job, index) => ({
+
+  const manualApplications = state.applications
+    .filter((application) => application.source === 'manual')
+    .map((application) => {
+      const job = state.jobs.find((item) => String(item.id) === String(application.job.id));
+      if (!job) {
+        return null;
+      }
+      return {
+        ...application,
+        job
+      };
+    })
+    .filter(Boolean);
+
+  const manualIds = new Set(manualApplications.map((application) => String(application.job.id)));
+
+  const generatedApplications = state.jobs
+    .slice(0, 2)
+    .map((job, index) => ({ job, index }))
+    .filter(({ job }) => !manualIds.has(String(job.id)))
+    .map(({ job, index }) => ({
+      source: 'generated',
+      job,
+      employer: getEmployer(index),
+      status: statuses[index % statuses.length],
+      appliedAgo: index === 0 ? 'Aplicado hace 2 días' : 'Aplicado hace 1 día'
+    }));
+
+  state.applications = [...manualApplications, ...generatedApplications];
+}
+
+function applyToJob(jobId) {
+  const jobIndex = state.jobs.findIndex((job) => String(job.id) === String(jobId));
+  if (jobIndex === -1) {
+    return;
+  }
+
+  if (hasApplication(jobId)) {
+    setDetailApplyState(jobId);
+    renderApplications();
+    openOverlay('applications-screen');
+    return;
+  }
+
+  const job = state.jobs[jobIndex];
+  const manualApplication = {
+    source: 'manual',
     job,
-    employer: getEmployer(index),
-    status: statuses[index % statuses.length],
-    appliedAgo: index === 0 ? 'Aplicado hace 2 días' : 'Aplicado hace 1 día'
-  }));
+    employer: getEmployer(jobIndex),
+    status: {
+      label: 'En revisión',
+      tone: 'info',
+      meta: 'El empleador revisará tu solicitud'
+    },
+    appliedAgo: 'Hace unos instantes'
+  };
+
+  state.applications = [manualApplication, ...state.applications];
+  renderApplications();
+  setDetailApplyState(jobId);
+  addNotification({
+    title: 'Solicitud enviada',
+    description: `Aplicaste a «${job.title}»`,
+    icon: '📝',
+    tone: 'success'
+  });
+  openOverlay('applications-screen');
 }
 
 function openJobDetail(jobId) {
@@ -423,6 +516,12 @@ function openJobDetail(jobId) {
     avatar.textContent = employer.avatar;
   }
 
+  if (elements.jobDetailScreen) {
+    elements.jobDetailScreen.dataset.jobId = job.id;
+  }
+
+  setDetailApplyState(job.id);
+
   openOverlay('job-detail-screen');
 }
 
@@ -446,6 +545,10 @@ async function loadJobs() {
     renderSearchResults();
     renderPublishList();
     renderApplications();
+    const currentDetailId = elements.jobDetailScreen?.dataset?.jobId;
+    if (currentDetailId) {
+      setDetailApplyState(currentDetailId);
+    }
   } catch (error) {
     const message = `<p class="empty-state">${error.message}</p>`;
     elements.homeJobs.innerHTML = message;
@@ -561,7 +664,7 @@ function setupEventListeners() {
     renderNotifications();
   });
 
-  document.querySelector('.screens')?.addEventListener('click', (event) => {
+  elements.screens?.addEventListener('click', (event) => {
     const card = event.target.closest('[data-job-id]');
     if (!card || card.closest('.overlay')) {
       return;
@@ -574,8 +677,20 @@ function setupEventListeners() {
       deleteJob(jobId);
       return;
     }
-    if (event.target.closest('.job-card__contact') || event.target.closest('.job-card__apply')) {
+    const contactButton = event.target.closest('.job-card__contact');
+    if (contactButton) {
+      event.preventDefault();
       event.stopPropagation();
+      renderMessages();
+      openOverlay('messages-screen');
+      return;
+    }
+    const applyButton = event.target.closest('.job-card__apply');
+    if (applyButton) {
+      event.preventDefault();
+      event.stopPropagation();
+      applyToJob(jobId);
+      return;
     }
     openJobDetail(jobId);
   });
@@ -607,6 +722,15 @@ function setupEventListeners() {
     } catch (error) {
       elements.formStatus.textContent = error.message;
       elements.formStatus.classList.add('error');
+    }
+  });
+
+  elements.detailApply?.addEventListener('click', () => {
+    const { jobId } = elements.jobDetailScreen?.dataset || {};
+    const fallbackId = elements.detailApply?.dataset.jobId;
+    const targetJobId = jobId || fallbackId;
+    if (targetJobId) {
+      applyToJob(targetJobId);
     }
   });
 }
