@@ -1,58 +1,33 @@
 package com.worken.backend.job;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
+import java.util.Objects;
 
-@Entity
-@Table(name = "jobs")
 public class Job {
+    private final long id;
+    private final String title;
+    private final String description;
+    private final String category;
+    private final String city;
+    private final double payment;
+    private final String contactPhone;
+    private final String contactEmail;
+    private final LocalDate publishedAt;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @NotBlank
-    @Size(max = 120)
-    private String title;
-
-    @NotBlank
-    @Size(max = 1000)
-    private String description;
-
-    @NotBlank
-    @Size(max = 255)
-    private String location;
-
-    @NotNull
-    @Min(0)
-    private Integer hourlyRate;
-
-    @NotBlank
-    @Size(max = 255)
-    @Column(nullable = false)
-    private String category;
-
-    protected Job() {
-        // Constructor para JPA
-    }
-
-    public Job(String title, String description, String location, Integer hourlyRate, String category) {
+    public Job(long id, String title, String description, String category, String city, double payment,
+               String contactPhone, String contactEmail, LocalDate publishedAt) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.location = location;
-        this.hourlyRate = hourlyRate;
         this.category = category;
+        this.city = city;
+        this.payment = payment;
+        this.contactPhone = contactPhone;
+        this.contactEmail = contactEmail;
+        this.publishedAt = publishedAt;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
@@ -60,39 +35,58 @@ public class Job {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getDescription() {
         return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public Integer getHourlyRate() {
-        return hourlyRate;
-    }
-
-    public void setHourlyRate(Integer hourlyRate) {
-        this.hourlyRate = hourlyRate;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public String getCity() {
+        return city;
+    }
+
+    public double getPayment() {
+        return payment;
+    }
+
+    public String getContactPhone() {
+        return contactPhone;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public LocalDate getPublishedAt() {
+        return publishedAt;
+    }
+
+    public Job withUpdatedFields(JobInput input) {
+        return new Job(
+                this.id,
+                input.title(),
+                input.description(),
+                input.category(),
+                input.city(),
+                input.payment(),
+                input.contactPhone(),
+                input.contactEmail(),
+                input.publishedAt()
+        );
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Job job = (Job) o;
+        return id == job.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,24 +1,33 @@
 # Backend Worken
 
-API REST construida con Spring Boot para listar oportunidades laborales informales.
+API HTTP ligera (sin dependencias externas) para listar oportunidades laborales informales. Utiliza el servidor `com.sun.net.httpserver.HttpServer` incluido en el JDK, por lo que funciona sin necesidad de descargar librerías.
 
 ## Requisitos
 - JDK 17+
-- Maven 3.9+
 
-## Ejecutar
+## Compilación
+Desde este directorio:
+
 ```bash
-./mvnw spring-boot:run
+javac $(find src/main/java -name '*.java')
 ```
 
-La API quedará disponible en `http://localhost:8080`.
+## Ejecución
 
-### Endpoints principales
+```bash
+java -cp src/main/java com.worken.backend.BackendApplication
+```
+
+Por defecto escuchará en `http://localhost:8080/api/jobs`, aunque puedes definir otra configuración:
+
+- Variable de entorno `BACKEND_PORT`.
+- Propiedad JVM `-Dbackend.port=<puerto>`.
+
+## Endpoints
 - `GET /api/jobs`: lista todos los trabajos cargados.
-- `GET /api/jobs/{id}`: obtiene un trabajo por su identificador.
-- `POST /api/jobs`: crea un trabajo (requiere JSON con `title`, `description`, `location`, `hourlyRate`, `category`).
+- `GET /api/jobs/{id}`: obtiene un trabajo por su identificador numérico.
+- `POST /api/jobs`: crea un trabajo (JSON con `title`, `description`, `category`, `city`, `payment`, `contactPhone`, `contactEmail`, `publishedAt`).
 - `PUT /api/jobs/{id}`: actualiza un trabajo existente.
 - `DELETE /api/jobs/{id}`: elimina un trabajo.
 
-## Datos de ejemplo
-Al iniciar la aplicación se precargan trabajos representativos para facilitar pruebas rápidas. La base usa H2 en memoria.
+Se inicializan datos de ejemplo al levantar la aplicación para facilitar las pruebas manuales.
