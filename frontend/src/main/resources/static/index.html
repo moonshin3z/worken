@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Worken</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app">
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <main class="screens">
+        <section id="login-screen" class="screen screen--auth active">
+          <div class="auth-header">
+            <div class="logo">W</div>
+            <h1 class="brand">Worken</h1>
+          </div>
+          <h2>Bienvenido de vuelta</h2>
+          <p class="subtitle">Inicia sesión para continuar</p>
+          <form id="login-form" class="form">
+            <label class="form-field">
+              <span>Correo electrónico</span>
+              <input type="email" name="email" placeholder="tu@email.com" required>
+            </label>
+            <label class="form-field">
+              <span>Contraseña</span>
+              <input type="password" name="password" placeholder="••••••••" required>
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" name="remember">
+              <span>Recordarme</span>
+            </label>
+            <a href="#" class="link link--small">¿Olvidaste tu contraseña?</a>
+            <button type="submit" class="btn btn--primary">Iniciar sesión</button>
+            <div class="divider"><span>o continúa con</span></div>
+            <div class="auth-providers">
+              <button type="button" class="btn btn--outline">Google</button>
+              <button type="button" class="btn btn--outline">Facebook</button>
+            </div>
+          </form>
+          <p class="footer-text">¿No tienes cuenta? <button type="button" id="open-register" class="link">Regístrate aquí</button></p>
+        </section>
+
+        <section id="register-screen" class="screen screen--auth">
+          <div class="screen-top gradient">
+            <button type="button" id="back-to-login" class="icon-button">←</button>
+            <div>
+              <h2>Crear cuenta</h2>
+              <p class="subtitle">Únete a Worken y encuentra oportunidades</p>
+            </div>
+          </div>
+          <form id="register-form" class="form">
+            <label class="form-field">
+              <span>Nombre completo</span>
+              <input type="text" name="name" placeholder="Juan Pérez" required>
+            </label>
+            <label class="form-field">
+              <span>Correo electrónico</span>
+              <input type="email" name="email" placeholder="tu@email.com" required>
+            </label>
+            <label class="form-field">
+              <span>Teléfono</span>
+              <input type="tel" name="phone" placeholder="+502 1234-5678">
+            </label>
+            <label class="form-field">
+              <span>Ubicación</span>
+              <input type="text" name="location" placeholder="Selecciona tu ubicación">
+            </label>
+            <label class="form-field">
+              <span>Contraseña</span>
+              <input type="password" name="password" placeholder="Mínimo 8 caracteres" required>
+            </label>
+            <label class="form-field">
+              <span>Confirmar contraseña</span>
+              <input type="password" name="confirm" placeholder="Repite tu contraseña" required>
+            </label>
+            <label class="form-checkbox">
+              <input type="checkbox" name="terms" required>
+              <span>Acepto los <a href="#" class="link link--small">términos y condiciones</a> y la <a href="#" class="link link--small">política de privacidad</a></span>
+            </label>
+            <button type="submit" class="btn btn--primary">Crear cuenta</button>
+          </form>
+        </section>
+
+        <section id="home-screen" class="screen">
+          <div class="screen-top gradient">
+            <div class="home-header">
+              <div>
+                <p class="overline">Hola, bienvenido 👋</p>
+                <h2 id="home-username">Carlos Mendoza</h2>
+              </div>
+              <button type="button" class="icon-button icon-button--badge" data-overlay="notifications">
+                🔔
+                <span id="notifications-count" class="badge">3</span>
+              </button>
+            </div>
+            <div class="balance-card">
+              <div>
+                <p class="label">Balance disponible</p>
+                <p class="amount" id="balance-amount">Q0</p>
+              </div>
+              <span id="balance-change" class="chip chip--success">+0%</span>
+            </div>
+            <div class="segment-control">
+              <button type="button" class="segment-control__button segment-control__button--active">Pendientes (3)</button>
+              <button type="button" class="segment-control__button">Explorar</button>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="section-header">
+              <h3>Tus próximos trabajos</h3>
+              <button type="button" class="link link--small" data-target="search-screen">Explorar</button>
+            </div>
+            <div id="home-jobs" class="cards-list"></div>
+            <div class="section-header">
+              <h3>Acciones rápidas</h3>
+            </div>
+            <div class="quick-actions">
+              <button type="button" class="quick-action" data-overlay="applications">
+                <span class="quick-action__icon">📝</span>
+                <span>Aplicaciones</span>
+              </button>
+              <button type="button" class="quick-action" data-overlay="messages">
+                <span class="quick-action__icon">💬</span>
+                <span>Mensajes</span>
+              </button>
+              <button type="button" class="quick-action" data-overlay="notifications">
+                <span class="quick-action__icon">🔔</span>
+                <span>Notificaciones</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section id="search-screen" class="screen">
+          <div class="screen-top gradient">
+            <div class="section-header">
+              <h2>Buscar trabajos</h2>
+              <button type="button" class="btn btn--ghost" data-target="home-screen">Inicio</button>
+            </div>
+            <div class="search-box">
+              <span class="search-icon">🔍</span>
+              <input id="search-input" type="search" placeholder="Buscar por título o descripción">
+              <button type="button" class="btn btn--ghost" id="search-filters">Filtros</button>
+            </div>
+            <div id="search-categories" class="chip-group"></div>
+          </div>
+          <div class="screen-content" id="search-results"></div>
+        </section>
+
+        <section id="publish-screen" class="screen">
+          <div class="screen-top gradient">
+            <h2>Publicar trabajo</h2>
+            <p class="subtitle">Comparte oportunidades con la comunidad Worken</p>
+          </div>
+          <div class="screen-content">
+            <form id="job-form" class="form">
+              <label class="form-field">
+                <span>Título</span>
+                <input id="title" name="title" placeholder="Ej. Delivery en bicicleta" required>
+              </label>
+              <label class="form-field">
+                <span>Descripción</span>
+                <textarea id="description" name="description" placeholder="Describe la actividad" rows="3" required></textarea>
+              </label>
+              <label class="form-field">
+                <span>Categoría</span>
+                <input id="category" name="category" placeholder="Transporte, servicios, etc." required>
+              </label>
+              <label class="form-field">
+                <span>Ciudad</span>
+                <input id="city" name="city" placeholder="Zona 1, Ciudad de Guatemala" required>
+              </label>
+              <label class="form-field">
+                <span>Pago por hora (GTQ)</span>
+                <input id="payment" name="payment" type="number" min="0" step="0.01" placeholder="120" required>
+              </label>
+              <label class="form-field">
+                <span>Teléfono de contacto</span>
+                <input id="contactPhone" name="contactPhone" placeholder="+502 1234 5678">
+              </label>
+              <label class="form-field">
+                <span>Correo de contacto</span>
+                <input id="contactEmail" name="contactEmail" type="email" placeholder="empleador@email.com">
+              </label>
+              <button type="submit" class="btn btn--primary">Publicar ahora</button>
+              <p id="form-status" class="form-status" role="status"></p>
+            </form>
+            <div class="section-header">
+              <h3>Mis publicaciones</h3>
+            </div>
+            <div id="publish-list" class="cards-list"></div>
+          </div>
+        </section>
+
+        <section id="profile-screen" class="screen">
+          <div class="screen-top gradient">
+            <div class="profile-head">
+              <div class="avatar">CM</div>
+              <div>
+                <h2>Carlos Mendoza</h2>
+                <p class="subtitle">Mensajero • Ciudad de Guatemala</p>
+              </div>
+            </div>
+          </div>
+          <div class="screen-content">
+            <div class="stat-grid">
+              <div class="stat-card">
+                <p class="label">Trabajos completados</p>
+                <p class="stat-value">48</p>
+              </div>
+              <div class="stat-card">
+                <p class="label">Calificación</p>
+                <p class="stat-value">4.8 ⭐️</p>
+              </div>
+              <div class="stat-card">
+                <p class="label">Años en Worken</p>
+                <p class="stat-value">3</p>
+              </div>
+            </div>
+            <div class="list-card">
+              <button type="button" class="list-card__item" data-overlay="applications">Mis aplicaciones</button>
+              <button type="button" class="list-card__item" data-overlay="messages">Mensajes</button>
+              <button type="button" class="list-card__item" data-overlay="notifications">Notificaciones</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="job-detail-screen" class="screen overlay">
+          <div class="overlay-sheet">
+            <div class="overlay-header gradient">
+              <button type="button" class="icon-button overlay-close">←</button>
+              <span class="chip" id="detail-category">Transporte</span>
+            </div>
+            <div class="overlay-body">
+              <div class="detail-heading">
+                <h2 id="detail-title">Trabajo</h2>
+                <p class="detail-rate"><span id="detail-rate">Q0</span><small> por hora</small></p>
+              </div>
+              <div class="detail-meta">
+                <div><span>📍</span><span id="detail-location"></span></div>
+                <div><span>🕒</span><span id="detail-schedule"></span></div>
+                <div><span>⏱️</span><span id="detail-duration"></span></div>
+              </div>
+              <div class="detail-publisher">
+                <div class="avatar avatar--small">ML</div>
+                <div>
+                  <p class="publisher-name" id="detail-employer">María López</p>
+                  <button type="button" class="link link--small" id="detail-view-profile">Ver perfil</button>
+                </div>
+              </div>
+              <p id="detail-description" class="detail-description"></p>
+              <div class="contact-box">
+                <p>📞 <span id="detail-phone">No indicado</span></p>
+                <p>✉️ <span id="detail-email">No indicado</span></p>
+              </div>
+              <button type="button" class="btn btn--primary" id="detail-apply">Aplicar ahora</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="notifications-screen" class="screen overlay">
+          <div class="overlay-sheet">
+            <div class="overlay-header gradient">
+              <button type="button" class="icon-button overlay-close">←</button>
+              <div>
+                <h2>Notificaciones</h2>
+                <p class="subtitle"><span id="notifications-total">0</span> nuevas</p>
+              </div>
+              <button type="button" class="btn btn--ghost" id="mark-notifications">Marcar todas como leídas</button>
+            </div>
+            <div id="notifications-list" class="overlay-body list"></div>
+          </div>
+        </section>
+
+        <section id="messages-screen" class="screen overlay">
+          <div class="overlay-sheet">
+            <div class="overlay-header gradient">
+              <button type="button" class="icon-button overlay-close">←</button>
+              <div>
+                <h2>Mensajes</h2>
+                <p class="subtitle">3 conversaciones</p>
+              </div>
+            </div>
+            <div class="overlay-body">
+              <div class="search-box search-box--rounded">
+                <span class="search-icon">🔍</span>
+                <input type="search" id="messages-search" placeholder="Buscar conversaciones...">
+              </div>
+              <div id="messages-list" class="list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="applications-screen" class="screen overlay">
+          <div class="overlay-sheet">
+            <div class="overlay-header gradient">
+              <button type="button" class="icon-button overlay-close">←</button>
+              <div class="segment-control">
+                <button type="button" class="segment-control__button segment-control__button--active">Activas (2)</button>
+                <button type="button" class="segment-control__button">Historial (4)</button>
+              </div>
+            </div>
+            <div id="applications-list" class="overlay-body list"></div>
+          </div>
+        </section>
+      </main>
+      <nav id="tab-bar" class="tab-bar hidden">
+        <button type="button" class="tab-bar__button tab-bar__button--active" data-target="home-screen">
+          <span>🏠</span>
+          <span>Inicio</span>
+        </button>
+        <button type="button" class="tab-bar__button" data-target="search-screen">
+          <span>🔎</span>
+          <span>Buscar</span>
+        </button>
+        <button type="button" class="tab-bar__button" data-target="publish-screen">
+          <span>➕</span>
+          <span>Publicar</span>
+        </button>
+        <button type="button" class="tab-bar__button" data-target="profile-screen">
+          <span>👤</span>
+          <span>Perfil</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+  <script src="/config.js"></script>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
